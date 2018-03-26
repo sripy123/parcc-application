@@ -79,6 +79,7 @@ public class ParccStudentController {
 				logger.info("Parcc student Resulsts size "+parccList.size());
 			}
 		} catch (ParccServiceException pe) {
+			logger.error("Exception while getting the Parcc test resulsts " + pe.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		
@@ -100,8 +101,12 @@ public class ParccStudentController {
 			response = parccService.updateParccResult(parccResultDTO);
 			response.setCode(ErrorMessages.PARCC_002.getCode());
 			response.setMsg(parccMsgService.getErrorMessage(ErrorMessages.PARCC_002));
-		} catch (ParccServiceException ex) {
+		} catch (ParccServiceException pe) {
+			logger.error("Exception while updating the Parcc test resulsts " + pe.getMessage());
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			response = new ParccResultDTO();
+			response.setCode(ErrorMessages.PARCC_500.getCode());
+			response.setMsg(parccMsgService.getErrorMessage(ErrorMessages.PARCC_500));
 		}
 		return new ResponseEntity<ParccResultDTO>(response, httpStatus);
 	}
@@ -120,11 +125,12 @@ public class ParccStudentController {
 			response = parccService.createParccResult(parccResultDTO);
 			response.setCode(ErrorMessages.PARCC_001.getCode());
 			response.setMsg(parccMsgService.getErrorMessage(ErrorMessages.PARCC_001));
-		} catch (ParccServiceException ex) {
+		} catch (ParccServiceException pe) {
 			response = new ParccResultDTO();
 			response.setCode(ErrorMessages.PARCC_500.getCode());
 			response.setMsg(parccMsgService.getErrorMessage(ErrorMessages.PARCC_500));
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+			logger.error("Exception while creating the Parcc test resulsts " + pe.getMessage());
 		}
 
 		return new ResponseEntity<ParccResultDTO>(response, httpStatus);
@@ -146,7 +152,8 @@ public class ParccStudentController {
 				parccService.deleteParccResult(Long.parseLong(id.get()));
 				response.setCode(ErrorMessages.PARCC_004.getCode());
 				response.setMsg(parccMsgService.getErrorMessage(ErrorMessages.PARCC_004));
-			} catch (ParccServiceException ex) {
+			} catch (ParccServiceException pe) {
+				logger.error("Exception while deleting the Parcc test resulsts " + pe.getMessage());
 				httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 			}
 		} else {
